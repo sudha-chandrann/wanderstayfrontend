@@ -17,7 +17,7 @@ function UserAvatar({
   size = "md",
   className = ""
 }: UserAvatarProps) {
-  // Generate initials from username or email
+  
   const getInitials = () => {
     if (username) {
       return username

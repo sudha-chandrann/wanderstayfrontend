@@ -1,28 +1,49 @@
-import  { useState } from 'react';
+import { useState } from "react";
 // import { ThemeToggle } from './theme-toggle';
-import { AlignJustify, LogInIcon, User, X } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '../ui/button';
-import UserAvatar from './UserAvatar';
-import { ThemeToggle } from './ThemeToggle';
+import { AlignJustify, LogInIcon, LogOutIcon, User, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "../ui/button";
+import UserAvatar from "./UserAvatar";
+import { ThemeToggle } from "./ThemeToggle";
+import { useDispatch, useSelector } from "react-redux";
+import { authlogout } from "@/redux/userslice";
+import axiosInstance from "@/utils/axiosconfig";
 
 function UserMenu() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const router =useNavigate();
+
+  const email = useSelector((state) => state.user.email);
+  const userimage = useSelector((state) => state.user.avatar);
+  const username = useSelector((state) => state.user.username);
+  const dispatch =useDispatch();
+
+  const router = useNavigate();
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
 
-  const HandleAuth = (url:string) => {
+  const HandleAuth = (url: string) => {
     setMenuOpen(false);
-    router(`${url}`)
+    router(`${url}`);
+  };
+
+
+  const handleLogout = async() => {
+    try {
+     const response = await axiosInstance.get('/api/users/logout');
+     if(response?.data?.success){
+        dispatch(authlogout())
+     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch(error:any) {
+      console.log(" the error during geting logout",error)
+    }
   };
 
   return (
     <div className="relative flex items-center gap-2">
-      <ThemeToggle/>
-      
-      <div className="hidden sm:flex">
+      <ThemeToggle />
+      <div className="flex">
         <div className="relative">
           <Button
             variant="outline"
@@ -33,8 +54,17 @@ function UserMenu() {
             aria-haspopup="true"
             aria-label="User menu"
           >
-            {menuOpen ? <X className="h-4 w-4" /> : <AlignJustify className="h-4 w-4" />}
-            <UserAvatar/>
+            {menuOpen ? (
+              <X className="h-4 w-4" />
+            ) : (
+              <AlignJustify className="h-4 w-4" />
+            )}
+
+            <UserAvatar
+              email={email}
+              userimage={userimage}
+              username={username}
+            />
           </Button>
 
           {menuOpen && (
@@ -43,32 +73,48 @@ function UserMenu() {
               role="menu"
               aria-orientation="vertical"
             >
-              
-              <Button
-                variant="ghost"
-                className="w-full flex gap-x-4  items-center justify-start px-4 py-2 text-sm font-medium"
-                onClick={()=>{HandleAuth('/login')}}
-                role="menuitem"
-              >
-                <LogInIcon className='text-rose-500 size-4'/>
-                Login
-              </Button>
-              
-              <Button
-                variant="ghost"
-                 className="w-full flex gap-x-4 items-center justify-start px-4 py-2 text-sm font-medium"
-                role="menuitem"
-                onClick={()=>{HandleAuth('/register')}}
-              >
-                <User className='text-rose-500 size-4'/>
-                Sign up
-              </Button>
+              {email && (
+                <Button
+                  variant="ghost"
+                  className="w-full flex gap-x-4  items-center justify-start px-4 py-2 text-sm font-medium"
+                  onClick={handleLogout}
+                  role="menuitem"
+                >
+                  <LogOutIcon className="text-rose-500 size-4" />
+                  Logout
+                </Button>
+              )}
+              {!email && (
+                <>
+                  <Button
+                    variant="ghost"
+                    className="w-full flex gap-x-4  items-center justify-start px-4 py-2 text-sm font-medium"
+                    onClick={() => {
+                      HandleAuth("/login");
+                    }}
+                    role="menuitem"
+                  >
+                    <LogInIcon className="text-rose-500 size-4" />
+                    Login
+                  </Button>
+
+                  <Button
+                    variant="ghost"
+                    className="w-full flex gap-x-4 items-center justify-start px-4 py-2 text-sm font-medium"
+                    role="menuitem"
+                    onClick={() => {
+                      HandleAuth("/register");
+                    }}
+                  >
+                    <User className="text-rose-500 size-4" />
+                    Sign up
+                  </Button>
+                </>
+              )}
             </div>
           )}
         </div>
       </div>
-
-
     </div>
   );
 }

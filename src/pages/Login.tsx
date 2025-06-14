@@ -5,7 +5,10 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff, Mail, Lock, AlertCircle, Loader2 } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axiosInstance from '@/utils/axiosconfig';
+import { useDispatch } from 'react-redux';
+import { authlogin } from '@/redux/userslice';
 
 interface LoginForm {
   email: string;
@@ -27,6 +30,8 @@ function LoginPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const router = useNavigate();
+  const dispatch=useDispatch();
 
   useEffect(() => {
     if (errors.email && form.email) {
@@ -40,7 +45,7 @@ function LoginPage() {
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
-  };
+  }
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -78,10 +83,20 @@ function LoginPage() {
 
     try {
 
-    //  
+    const response = await axiosInstance.post('/api/users/login',form);
+
+     if(response?.data?.success){
+        const user = response.data.data;
+        dispatch(authlogin(user))
+        setTimeout(()=>{
+          router('/');
+        },1000)
+     }
       
-    } catch {
-      setErrors({ general: 'Something went wrong. Please try again.' });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch(error:any) {
+      console.log(" the error during login",error)
+      setErrors(error?.response?.data?.error|| error?.message || 'Something went wrong. Please try again.');
     } finally {
       setIsLoading(false);
     }

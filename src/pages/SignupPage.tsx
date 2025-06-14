@@ -14,7 +14,10 @@ import {
   Loader2, 
 } from 'lucide-react';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link,
+   useNavigate
+   } from 'react-router-dom';
+import axiosInstance from '@/utils/axiosconfig';
 
 interface SignupForm {
   fullName: string;
@@ -43,42 +46,37 @@ function SignupPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
+  const router= useNavigate();
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
   const validatePhone = (phone: string): boolean => {
-    const phoneRegex = /^[+]?[1-9][\d]{0,15}$/;
-    return phoneRegex.test(phone.replace(/\s/g, ''));
+    return phone.length === 10 ;
   };
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
-    // First name validation
     if (!form.fullName.trim()) {
       newErrors.fullName = 'full Name is required';
     } else if (form.fullName.trim().length < 2) {
       newErrors.fullName = 'First name must be at least 2 characters';
     }
 
-    // Email validation
     if (!form.email) {
       newErrors.email = 'Email is required';
     } else if (!validateEmail(form.email)) {
       newErrors.email = 'Please enter a valid email address';
     }
 
-    // Phone validation
     if (!form.phone) {
       newErrors.phone = 'Phone number is required';
     } else if (!validatePhone(form.phone)) {
       newErrors.phone = 'Please enter a valid phone number';
     }
 
-    // Password validation
     if (!form.password) {
       newErrors.password = 'Password is required';
     } 
@@ -103,10 +101,18 @@ function SignupPage() {
     setErrors({});
 
     try {
-// 
+     const response = await axiosInstance.post('/api/users/register',form);
+     console.log(" the respose is",response.data);
+     if(response?.data?.success){
+        setTimeout(()=>{
+          router('/login');
+        },1000)
+     }
 
-    } catch {
-      setErrors({ general: 'Something went wrong. Please try again.' });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch(error:any) {
+      console.log(" the error during signup is",error)
+      setErrors({ general: error?.message || error?.response?.data?.error||'Something went wrong. Please try again.' });
     } finally {
       setIsLoading(false);
     }
