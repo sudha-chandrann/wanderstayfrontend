@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 export function ThemeToggle() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  
   useEffect(() => {
     const root = document.documentElement;
     root.classList.remove('light', 'dark');
