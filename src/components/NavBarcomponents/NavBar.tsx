@@ -14,6 +14,8 @@ export default function NavBar() {
   const location = useLocation();
   const isLoginPage = location.pathname === "/login";
   const isSignUpPage = location.pathname === "/register";
+  const ishomepage= location.pathname === "/";
+
 
   const [IsLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
@@ -56,11 +58,10 @@ export default function NavBar() {
             <Logo />
           </Link>
           {!(isLoginPage || isSignUpPage) && <SearchComponent />}
-
           <UserMenu />
         </div>
       </div>
-      {!(isLoginPage || isSignUpPage) && <Categories />}
+      {ishomepage && <Categories />}
     </nav>
   );
 }

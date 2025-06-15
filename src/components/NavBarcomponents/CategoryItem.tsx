@@ -1,6 +1,6 @@
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import type { CategoryProps } from "./Categories";
 import qs from "query-string";
+import type { CategoryProps } from "@/utils/constant";
 
 interface CategoryItemProps {
   item: CategoryProps;
@@ -44,7 +44,7 @@ function CategoryItem({ item }: CategoryItemProps) {
   return (
     <div
       className={`flex px-3 py-2 rounded-full items-center gap-x-2 cursor-pointer transition-all duration-200 whitespace-nowrap ${
-        isSelected ? "bg-rose-400 hover:bg-rose-500 border-rose-700 text-white dark:text-black" : "bg-neutral-200 dark:text-black hover:bg-neutral-400"
+        isSelected ? "bg-rose-400 hover:bg-rose-500 border-rose-700 text-white " : "bg-neutral-100 dark:text-black hover:bg-neutral-200"
       }`}
       onClick={handleClick}
     >

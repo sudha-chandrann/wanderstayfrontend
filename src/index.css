@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-/* @import url('https://fonts.googleapis.com/css2?family=Birthstone&family=Edu+AU+VIC+WA+NT+Pre:wght@400..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Birthstone&family=Edu+AU+VIC+WA+NT+Pre:wght@400..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
@@ -127,6 +127,13 @@
 .hide-scrollbar::-webkit-scrollbar {
     display: none;  /* Safari and Chrome */
 }
-/* .logo {
+.logo {
   font-family: "Edu AU VIC WA NT Pre", cursive;
-} */
+}
+
+.leaflet-bottom,
+.leaflet-control,
+.leaflet-pane,
+.leaflet-top {
+  z-index: 0 !important;
+}

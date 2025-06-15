@@ -32,9 +32,7 @@ interface RootState {
 
 function UserMenu() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const email = useSelector((state: RootState) => state.user.email);
-  const userimage = useSelector((state: RootState) => state.user.avatar);
-  const username = useSelector((state: RootState) => state.user.fullName);
+  const user = useSelector((state: RootState) => state.user);
 
   const dispatch = useDispatch();
 
@@ -60,6 +58,16 @@ function UserMenu() {
     }
   };
 
+  const handleGuest=()=>{
+    if(!user?.email){
+      router('/login')
+    }
+    else{
+      router('host')
+    }
+    setMenuOpen(false);
+  }
+
   return (
     <div className="relative flex items-center gap-2">
       <ThemeToggle />
@@ -81,9 +89,9 @@ function UserMenu() {
             )}
 
             <UserAvatar
-              email={email}
-              userimage={userimage}
-              username={username}
+              email={user?.email}
+              userimage={user?.avatar}
+              username={user?.fullName}
             />
           </Button>
 
@@ -96,13 +104,13 @@ function UserMenu() {
               <Button
                 variant="ghost"
                 className="w-full flex gap-x-4  items-center justify-start px-4 py-2 text-sm font-medium"
-                onClick={() => {}}
+                onClick={handleGuest}
                 role="menuitem"
               >
               <User2 className="text-rose-500 size-4" />
                 Become a host
               </Button>
-              {email && (
+              {user?.email && (
                 <>
                   <Button
                     variant="ghost"
@@ -160,7 +168,7 @@ function UserMenu() {
                   </Button>
                 </>
               )}
-              {!email && (
+              {!user?.email && (
                 <>
                   <Button
                     variant="ghost"
