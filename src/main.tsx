@@ -7,6 +7,7 @@ import LoginPage from './pages/Login';
 import SignupPage from './pages/SignupPage';
 import { Provider } from 'react-redux';
 import store from './redux/store';
+import Homepage from './pages/Homepage';
 
 
 const router = createBrowserRouter([
@@ -15,11 +16,15 @@ const router = createBrowserRouter([
     element:<App/>,
     children:[
       {
-        path:'/login',
+        path:"/",
+        element:<Homepage/>
+      },
+      {
+        path:'login',
         element:<LoginPage/>
       },
       {
-        path:'/register',
+        path:'register',
         element:<SignupPage/>
       }
     ]

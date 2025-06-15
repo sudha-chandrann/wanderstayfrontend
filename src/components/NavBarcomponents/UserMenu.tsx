@@ -1,6 +1,17 @@
 import { useState } from "react";
-// import { ThemeToggle } from './theme-toggle';
-import { AlignJustify, LogInIcon, LogOutIcon, User, X } from "lucide-react";
+import {
+  AlignJustify,
+  Calendar,
+  Heart,
+  Home,
+  LogInIcon,
+  LogOutIcon,
+  Plane,
+  Table,
+  User,
+  User2,
+  X,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import UserAvatar from "./UserAvatar";
@@ -9,13 +20,23 @@ import { useDispatch, useSelector } from "react-redux";
 import { authlogout } from "@/redux/userslice";
 import axiosInstance from "@/utils/axiosconfig";
 
+interface RootState {
+  user: {
+    email: string;
+    avatar?: string;
+    fullName: string;
+    _id: string;
+    phone: string;
+  };
+}
+
 function UserMenu() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const email = useSelector((state: RootState) => state.user.email);
+  const userimage = useSelector((state: RootState) => state.user.avatar);
+  const username = useSelector((state: RootState) => state.user.fullName);
 
-  const email = useSelector((state) => state.user.email);
-  const userimage = useSelector((state) => state.user.avatar);
-  const username = useSelector((state) => state.user.username);
-  const dispatch =useDispatch();
+  const dispatch = useDispatch();
 
   const router = useNavigate();
   const toggleMenu = () => {
@@ -27,16 +48,15 @@ function UserMenu() {
     router(`${url}`);
   };
 
-
-  const handleLogout = async() => {
+  const handleLogout = async () => {
     try {
-     const response = await axiosInstance.get('/api/users/logout');
-     if(response?.data?.success){
-        dispatch(authlogout())
-     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch(error:any) {
-      console.log(" the error during geting logout",error)
+      const response = await axiosInstance.get("/api/users/logout");
+      if (response?.data?.success) {
+        dispatch(authlogout());
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log(" the error during geting logout", error);
     }
   };
 
@@ -69,20 +89,76 @@ function UserMenu() {
 
           {menuOpen && (
             <div
-              className="fixed right-0 top-full mt-2 w-56 bg-background border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-2 z-50"
+              className="fixed right-0 top-20 mt-2 w-56 bg-background border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-2 z-50"
               role="menu"
               aria-orientation="vertical"
             >
+              <Button
+                variant="ghost"
+                className="w-full flex gap-x-4  items-center justify-start px-4 py-2 text-sm font-medium"
+                onClick={() => {}}
+                role="menuitem"
+              >
+              <User2 className="text-rose-500 size-4" />
+                Become a host
+              </Button>
               {email && (
-                <Button
-                  variant="ghost"
-                  className="w-full flex gap-x-4  items-center justify-start px-4 py-2 text-sm font-medium"
-                  onClick={handleLogout}
-                  role="menuitem"
-                >
-                  <LogOutIcon className="text-rose-500 size-4" />
-                  Logout
-                </Button>
+                <>
+                  <Button
+                    variant="ghost"
+                    className="w-full flex gap-x-4  items-center justify-start px-4 py-2 text-sm font-medium"
+                    onClick={() => {}}
+                    role="menuitem"
+                  >
+                    <Plane className="text-rose-500 size-4" />
+                    My trips
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="w-full flex gap-x-4  items-center justify-start px-4 py-2 text-sm font-medium"
+                    onClick={() => {}}
+                    role="menuitem"
+                  >
+                    <Heart className="text-rose-500 size-4" />
+                    My favorites
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="w-full flex gap-x-4  items-center justify-start px-4 py-2 text-sm font-medium"
+                    onClick={() => {}}
+                    role="menuitem"
+                  >
+                    <Calendar className="text-rose-500 size-4" />
+                    My reservations
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="w-full flex gap-x-4  items-center justify-start px-4 py-2 text-sm font-medium"
+                    onClick={() => {}}
+                    role="menuitem"
+                  >
+                    <Home className="text-rose-500 size-4" />
+                    My Properties
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="w-full flex gap-x-4  items-center justify-start px-4 py-2 text-sm font-medium"
+                    onClick={() => {}}
+                    role="menuitem"
+                  >
+                    <Table className="text-rose-500 size-4" />
+                    Airbnb my home
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="w-full flex gap-x-4  items-center justify-start px-4 py-2 text-sm font-medium"
+                    onClick={handleLogout}
+                    role="menuitem"
+                  >
+                    <LogOutIcon className="text-rose-500 size-4" />
+                    Logout
+                  </Button>
+                </>
               )}
               {!email && (
                 <>
