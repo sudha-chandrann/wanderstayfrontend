@@ -26,6 +26,7 @@ function StepOne({ setStepNo, value ,Onclick}: StepOneProps) {
       setError("Please first select the category");
       return;
     }
+    setError('');
     setStepNo(2);
   };
 
