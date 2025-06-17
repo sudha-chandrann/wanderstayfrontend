@@ -14,8 +14,8 @@ import { AlertCircle, MinusCircle, PlusCircle } from "lucide-react";
 interface StepThreeProps {
   setStepNo: (no: number) => void;
   value: {
-    guestcount: number;
-    roomcount: number;
+    roomCount: number;
+    guestCount: number;
     bathroomCount:number;
   };
   Onclick: (field: string, value: number) => void;
@@ -25,7 +25,7 @@ function StepThree({ setStepNo, value, Onclick }: StepThreeProps) {
   const [error, setError] = useState("");
 
   const handleNext = () => {
-    if (!value.roomcount || !value.guestcount || !value.bathroomCount ) {
+    if (!value.roomCount || !value.guestCount || !value.bathroomCount ) {
       setError("Please share basics about your place");
       return;
     }
@@ -63,16 +63,16 @@ function StepThree({ setStepNo, value, Onclick }: StepThreeProps) {
             className="text-rose-400"
               onClick={() => {
                 Onclick(
-                  "guestcount",
-                  value.guestcount > 1 ? value.guestcount - 1 : value.guestcount
+                  "guestCount",
+                  value.guestCount > 1 ? value.guestCount - 1 : value.guestCount
                 );
               }}
             />
-            {value.guestcount}
+            {value.guestCount}
             <PlusCircle
               className="text-rose-400"
               onClick={() => {
-                Onclick("guestcount", value.guestcount + 1);
+                Onclick("guestCount", value.guestCount + 1);
               }}
             />
           </div>
@@ -88,16 +88,16 @@ function StepThree({ setStepNo, value, Onclick }: StepThreeProps) {
             className="text-rose-400"
               onClick={() => {
                 Onclick(
-                  "roomcount",
-                  value.roomcount > 1 ? value.roomcount - 1 : value.roomcount
+                  "roomCount",
+                  value.roomCount > 1 ? value.roomCount - 1 : value.roomCount
                 );
               }}
             />
-            {value.roomcount}
+            {value.roomCount}
             <PlusCircle
               className="text-rose-400"
               onClick={() => {
-                Onclick("roomcount", value.roomcount + 1);
+                Onclick("roomCount", value.roomCount + 1);
               }}
             />
           </div>

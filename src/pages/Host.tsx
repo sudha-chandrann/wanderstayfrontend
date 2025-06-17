@@ -1,3 +1,4 @@
+import ResultStatusCard from "@/components/HostPageComponents/ResultStatusCard";
 import StepFive from "@/components/HostPageComponents/StepFive";
 import StepFour from "@/components/HostPageComponents/StepFour";
 import StepOne from "@/components/HostPageComponents/StepOne";
@@ -6,13 +7,16 @@ import StepThree from "@/components/HostPageComponents/StepThree";
 import StepTwo, {
   type CountrySelectorValue,
 } from "@/components/HostPageComponents/StepTwo";
+import axiosInstance from "@/utils/axiosconfig";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface FormDataProps {
   category: string;
   loaction: CountrySelectorValue | null;
-  guestcount: number;
-  roomcount: number;
+  guestCount: number;
+  roomCount: number;
   bathroomCount: number;
   imageSrc: Array<string>;
   price: number;
@@ -25,14 +29,17 @@ function Host() {
   const [form, setForm] = useState<FormDataProps>({
     category: "",
     loaction: null,
-    guestcount: 1,
-    roomcount: 1,
+    guestCount: 1,
+    roomCount: 1,
     bathroomCount: 1,
     imageSrc: [],
     price: 0,
     title: "",
     description: "",
   });
+  const [error, setError] = useState("");
+  const [loading, setIsLoading] = useState(false);
+  const router = useNavigate();
 
   const handleInputChange = (
     field: string,
@@ -48,6 +55,39 @@ function Host() {
     }));
   };
 
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    setError("");
+    try {
+      const response = await axiosInstance.post(
+        "/api/places/createnewplace",
+        form
+      );
+      if (!response?.data?.success) {
+             setError(response.data.message);
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log(" the error during creating new place", error);
+      setError(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Something went wrong. Please try again."
+      );
+    } finally {
+      setIsLoading(false);
+      setstepNo(7);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center pt-20">
+        <Loader2 className="animate-spin size-8 text-rose-600" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pb-10 bg-background pt-20 flex items-center justify-center px-3">
@@ -69,8 +109,8 @@ function Host() {
         <StepThree
           setStepNo={setstepNo}
           value={{
-            guestcount: form.guestcount,
-            roomcount: form.roomcount,
+            guestCount: form.guestCount,
+            roomCount: form.roomCount,
             bathroomCount: form.bathroomCount,
           }}
           Onclick={handleInputChange}
@@ -98,7 +138,23 @@ function Host() {
           setStepNo={setstepNo}
           value={form.price}
           Onclick={handleInputChange}
-          onSubmit={()=>{}}
+          onSubmit={handleSubmit}
+        />
+      )}
+      {error && (
+        <ResultStatusCard
+          status="error"
+          error="Failed to create listing. Please check your internet connection and try again."
+          onRetry={() => setstepNo(1)} 
+          onGoHome={() => router("/")}
+          loading={loading}
+        />
+      )}
+      {!error && stepNo === 7 && (
+        <ResultStatusCard
+          status="success"
+          onContinue={() => setstepNo(1)} 
+          onGoHome={() => router("/")}
         />
       )}
     </div>

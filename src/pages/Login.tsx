@@ -73,7 +73,8 @@ function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    const newErrors: FormErrors = {};
+
     if (!validateForm()) {
       return;
     }
@@ -84,7 +85,6 @@ function LoginPage() {
     try {
 
     const response = await axiosInstance.post('/api/users/login',form);
-
      if(response?.data?.success){
         const user = response.data.data;
         dispatch(authlogin(user))
@@ -96,7 +96,8 @@ function LoginPage() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch(error:any) {
       console.log(" the error during login",error)
-      setErrors(error?.response?.data?.error|| error?.message || 'Something went wrong. Please try again.');
+      newErrors.general= error?.response?.data?.error||error?.message || 'Something went wrong. Please try again.'
+      setErrors(newErrors);
     } finally {
       setIsLoading(false);
     }
